@@ -179,7 +179,8 @@ Deno.serve(async (req) => {
         if (usersError) throw usersError;
         users = data ?? [];
       }
-      const byId = new Map(users.map((row) => [String(row.telegram_id), row]));
+      const byId = new Map<string, Record<string, unknown>>();
+      for (const row of users) byId.set(String(row.telegram_id), row);
       return json({ ok: true, requests: (requests ?? []).map((row) => ({
         ...row, user: byId.get(String(row.telegram_id)) ?? null,
       })) });
