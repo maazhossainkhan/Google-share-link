@@ -56,6 +56,17 @@ create index if not exists canvau_requests_status_created_idx on public.canvau_a
 create index if not exists canvau_links_user_created_idx on public.canvau_links(telegram_id, created_at desc);
 create index if not exists canvau_links_active_expiry_idx on public.canvau_links(short_code, is_active, expires_at);
 
+-- Called only by the redirect Edge Function using the service_role key.
+create or replace function public.increment_canvau_link_click(p_short_code text)
+returns void
+language sql
+set search_path = public
+as $$
+  update public.canvau_links
+     set click_count = click_count + 1, updated_at = now()
+   where short_code = p_short_code and is_active = true;
+$$;
+
 -- All reads/writes go through server-side Edge Functions using the service role.
 -- No public client-side policies or table grants are created.
 alter table public.canvau_users enable row level security;
@@ -65,3 +76,5 @@ alter table public.canvau_links enable row level security;
 revoke all on public.canvau_users from anon, authenticated;
 revoke all on public.canvau_access_requests from anon, authenticated;
 revoke all on public.canvau_links from anon, authenticated;
+revoke all on function public.increment_canvau_link_click(text) from public, anon, authenticated;
+grant execute on function public.increment_canvau_link_click(text) to service_role;
