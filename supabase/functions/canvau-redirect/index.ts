@@ -41,12 +41,9 @@ Deno.serve(async (req) => {
       return errorPage(410, "Link unavailable", "The saved destination is not a valid web URL.");
     }
 
-    const { error: clickError } = await db.from("canvau_links")
-      .update({ click_count: 1 })
-      .eq("short_code", code)
-      .eq("click_count", -1);
-    // Click counters are incremented atomically by the companion RPC when available.
-    // If it is not installed, redirect still works; no unsafe read-modify-write occurs.
+    const { error: clickError } = await db.rpc("increment_canvau_link_click", {
+      p_short_code: code,
+    });
     if (clickError) console.error("Click counter update skipped:", clickError.message);
 
     return new Response(null, {
