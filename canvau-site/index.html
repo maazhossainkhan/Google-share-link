@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="Canvau — secure short links and Google share-link management.">
+  <title>Canvau — Link Studio</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="config.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="./"><span class="brand-mark">C</span><span>canvau</span></a>
+      <div class="topbar-right"><span id="connection-state" class="state-dot">Connecting</span><button id="refresh-btn" class="icon-button" title="Refresh" aria-label="Refresh">↻</button></div>
+    </header>
+
+    <main>
+      <section id="welcome" class="welcome panel">
+        <div class="eyebrow">LINK STUDIO</div>
+        <h1>Your links,<br><span>trimmed and tidy.</span></h1>
+        <p>Shorten a URL on Canvau, then attach a genuine Google share link returned by Google's own sharing flow.</p>
+        <div id="welcome-message" class="notice">Connecting securely to Telegram…</div>
+      </section>
+
+      <section id="dashboard" class="hidden">
+        <div class="userline">
+          <div><div class="eyebrow">WORKSPACE</div><h2 id="user-title">Your links</h2></div>
+          <span id="access-pill" class="pill">Checking</span>
+        </div>
+
+        <section class="panel create-panel">
+          <div class="section-heading"><div><div class="eyebrow">NEW LINK</div><h2>Create a short link</h2></div><span class="step-number">01</span></div>
+          <form id="create-form">
+            <label for="original-url">Destination URL</label>
+            <input id="original-url" type="url" inputmode="url" placeholder="https://example.com/page" maxlength="8192" required>
+            <button id="create-btn" class="primary-btn" type="submit">Create Canvau link <span>→</span></button>
+          </form>
+          <div id="created-result" class="created-result hidden"></div>
+        </section>
+
+        <section class="panel guidance-panel">
+          <div class="section-heading"><div><div class="eyebrow">GOOGLE SHARE</div><h2>Attach a Google link</h2></div><span class="step-number">02</span></div>
+          <p class="muted">Google does not offer a public API for creating <code>share.google</code> links. The link must come from Google's own app.</p>
+          <ol class="steps">
+            <li>Copy the Canvau short link you just created.</li>
+            <li>Open the page in the Google app on Android, then tap its Share option.</li>
+            <li>Copy the generated <code>share.google</code> or <code>search.app</code> URL and paste it into that link's card below.</li>
+          </ol>
+          <div class="notice notice-warn">Canvau will not invent Google tokens or mark a link as converted until a Google-domain URL is supplied.</div>
+        </section>
+
+        <section class="links-section">
+          <div class="section-heading list-heading"><div><div class="eyebrow">YOUR LIBRARY</div><h2>Saved links</h2></div><span id="link-count" class="count">0 links</span></div>
+          <div id="links-list" class="links-list"><div class="empty">Loading your links…</div></div>
+        </section>
+
+        <section id="admin-panel" class="panel hidden">
+          <div class="section-heading"><div><div class="eyebrow">ADMIN</div><h2>Access requests</h2></div><span class="step-number">ADM</span></div>
+          <div id="requests-list" class="requests-list"><div class="empty">No pending requests.</div></div>
+        </section>
+      </section>
+
+      <section id="outside-telegram" class="panel hidden">
+        <div class="eyebrow">TELEGRAM MINI APP</div><h2>Open Canvau from Telegram</h2>
+        <p class="muted">For secure sign-in, open this page from the Canvau bot's Mini App button in Telegram.</p>
+      </section>
+    </main>
+    <footer><span>CANVAU LINK STUDIO</span><span>Secure by design · v0.1</span></footer>
+  </div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
